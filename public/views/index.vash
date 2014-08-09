@@ -1,0 +1,8 @@
+<script src="lib/angular.min.js"></script>
+<script src="app/app.js"></script>
+
+<div ng-app="myApp">
+<div ng-controller="myC">
+    {{hello}}
+</div>
+</div>
