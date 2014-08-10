@@ -1,0 +1,33 @@
+Mon Jul 28 2014 11:11:04 GMT-0500 (Central Daylight Time):
+{ [Error: Command failed: error: could not lock config file .git/config: File exists
+]
+  stack: [Getter/Setter],
+  killed: false,
+  code: 1,
+  signal: null,
+  __frame: 
+   { name: 'LinkedRevisionControlClient_prototype__addRemotesToLocalGitRepo__5',
+     line: 160,
+     file: 'C:\\Users\\robert\\AppData\\Roaming\\npm\\node_modules\\azure-cli\\lib\\util\\git\\linkedrevisioncontrol._js',
+     prev: 
+      { name: 'GitClient_prototype_deploy__7',
+        line: 210,
+        file: 'C:\\Users\\robert\\AppData\\Roaming\\npm\\node_modules\\azure-cli\\lib\\util\\git\\linkedrevisioncontrol._js',
+        prev: [Object],
+        active: false,
+        offset: 4,
+        col: 2 },
+     active: false,
+     offset: 33,
+     col: 2 },
+  rawStack: [Getter] }
+Error: Command failed: error: could not lock config file .git/config: File exists
+
+    at ChildProcess.exithandler (child_process.js:540:15)
+    at ChildProcess.EventEmitter.emit (events.js:99:17)
+    at maybeClose (child_process.js:638:16)
+    at Process._handle.onexit (child_process.js:680:5)
+    at LinkedRevisionControlClient_prototype__addRemotesToLocalGitRepo__5 (C:\Users\robert\AppData\Roaming\npm\node_modules\azure-cli\lib\util\git\linkedrevisioncontrol._js:193:2)
+    at GitClient_prototype_deploy__7 (C:\Users\robert\AppData\Roaming\npm\node_modules\azure-cli\lib\util\git\linkedrevisioncontrol._js:214:2)
+    at __4 (C:\Users\robert\AppData\Roaming\npm\node_modules\azure-cli\lib\commands\asm\site._js:268:12)
+
