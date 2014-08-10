@@ -75,12 +75,16 @@ app.get('/chapters/:bookid', api.chapters);
 app.get('/notes/:bookid/:chapid', api.notes);
 app.post('/update', api.post);
 
-app.set('port', process.env.PORT || 3000);
+// app.set('port', process.env.PORT || 3000);
 
-var server = app.listen(app.get('port'), function() {
-  //debug('Express server listening on port ' + server.address().port);
-  console.log("cool");
+// var server = app.listen(app.get('port'), function() {
+//   //debug('Express server listening on port ' + server.address().port);
+//   console.log("cool");
 });
 
+
+var server = app.listen(process.env.PORT || 3001, function(){
+    console.log("cool");
+});
 
 //module.exports = app;
