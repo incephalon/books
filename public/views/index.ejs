@@ -61,7 +61,7 @@ select{
     height:85%;
     overflow-y:auto;
 }
-
+.cke_contents { height: 60% !important; }
 </style>
 
 
@@ -89,7 +89,7 @@ select{
          <div id="booksWrapper">
 
                 <div id="booksList" class="list-group">
-                <a class="list-group-item" ng-repeat="n in documents" ng-click="showChapters(n.bookid)" href="#/{{n.name}}">{{n.name}}</a>
+                <a class="list-group-item" ng-repeat="n in documents" ng-click="showChapters(n.bookid, n.name)" href="#/{{n.name}}">{{n.name}}</a>
                 </div>
 
         </div>
@@ -115,7 +115,7 @@ select{
 <ng-view></ng-view>
 
                 <div class="list-group">
-                  <a class="list-group-item" ng-repeat="n in chapters" ng-click="showNotes(n.bookid, n.chapid)">{{n.name}}</a>
+                  <a class="list-group-item" ng-repeat="n in chapters" ng-click="showNotes(n.bookid, n.chapid)" href="#/{{selectedBook}}/{{n.chapid}}">{{n.name}}</a>
 
                 </div>
 
@@ -155,9 +155,22 @@ select{
 
 <!-- <script src="//cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script> -->
 <script src="../lib/ckeditor/ckeditor.js"></script>
+<script src="./lib/ckeditor/adapters/jquery.js"></script>
 
 <script type="text/javascript">
-    CKEDITOR.replace( 'texter' );
+    
+    $( '#texter' ).ckeditor();
+    $('button').click(function(){
+            var data = $( '#texter' ).val();
+            console.log(data);
+            //console.log(CKEDITOR.instances['#texter'].getData());
+    });
+
+
+
+
+
 </script>
 
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+

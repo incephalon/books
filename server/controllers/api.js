@@ -37,9 +37,17 @@ exports.list = function(req, res) {
   });
 };
 
+exports.getBookId = function(req, res) {
+  //Chaptr.find({ 'bookid': req.params.bookid }, function(err, chapters) {
+    Book.find({ 'name': req.params.name }, function(err, books) {
+    res.send(books);
+  });
+};
+
 
 exports.chapters = function(req, res) {
-  Chaptr.find({ 'bookid': req.params.bookid }, function(err, chapters) {
+  //Chaptr.find({ 'bookid': req.params.bookid }, function(err, chapters) {
+    Chaptr.find({ 'bookid': req.params.bookid }, function(err, chapters) {
     res.send(chapters);
   });
 };
