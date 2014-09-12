@@ -90,7 +90,6 @@ exports.post = function ( req, res ){
 exports.addBook = function( req, res ) {
   Book.findOne().sort({'bookid':-1}).exec(function(err, data) {
     var lastBookId = data.bookid; 
-    console.log(lastBookId); 
     new Book({bookid:lastBookId+1, catid:1, name:req.body.bookname }).save(function(err) {
       res.send({status: err ? 0 : 1});
     });  
@@ -104,9 +103,8 @@ exports.removeBook = function( req, res ) {
 }
 
 exports.addChapter = function( req, res ) {
-  Chaptr.findOne().sort({'chapid':-1}).exec(function(err, data) {
-    var lastChapId = data.chapid; 
-    console.log(lastChapId); 
+  Chaptr.findOne({bookid: req.body.bookid}).sort({'chapid':-1}).exec(function(err, data) {
+    var lastChapId = data != null ? data.chapid : 0; 
     new Chaptr({chapid:lastChapId+1, bookid: req.body.bookid, name: req.body.name}).save(function(err) {
         res.send({status: err ? 0 : 1}); 
     }); 
@@ -114,7 +112,7 @@ exports.addChapter = function( req, res ) {
 }
 
 exports.removeChapter = function( req, res ) {
-  Chaptr.remove({chapid: req.body.chapid}, function(err, removed) {
+  Chaptr.remove({bookid: req.body.bookid, chapid: req.body.chapid}, function(err, removed) {
       res.send({status: removed ? 1 : 0}); 
   }); 
 }

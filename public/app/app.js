@@ -121,8 +121,8 @@ app.controller('myC', function($scope, $http){
 	}
 
 	$scope.removeSelectedChapter = function() {
-		if ($scope.selectedChapter <= 0) return; 
-		$http.post("/removeChapter", {chapid: $scope.selectedChapter}).success(function(data, status) {
+		if ($scope.selectedBook <= 0 || $scope.selectedChapter <= 0) return; 
+		$http.post("/removeChapter", {bookid: $scope.selectedBook, chapid: $scope.selectedChapter}).success(function(data, status) {
         	if(data.status == 1) {
         		$scope.showChapters($scope.selectedBook, null); 
         	}
