@@ -1,154 +1,67 @@
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-<link  rel="stylesheet" type="text/css"  href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css"/>
 <script src="lib/angular.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-route.min.js"></script>
 <script src="app/app.js"></script>
 
-<style>
-body{
-    margin:0px;
-    padding:10px;
-    overflow:hidden;
-}
-textarea
-{
-    margin:0px;
-    padding:0px;
-}
-#tex{
-    width:99%;
-    height:99%;
-    //border:1px solid black;
-}
-form{
-    height:100%;
-}
-#texter{
-    height:90%;
-    width:98%;
-    display:block;
-}
-button{
-    text-align:center;
-    margin:0 auto;
-}
-
-select{
-    width:100%;
-}
-.list-group{
-        margin:0px;
-    padding:0px;
-}
-table{
-    margin:0px;
-    padding:0px;
-}
-
-select{
-    height:36px;
-    margin-bottom:10px;
-}
-
-#booksColumn{
-    height:100%;
-}
-.row{
-    height:100%;
-}
-
-#booksList{
-    overflow-y:auto;
-    height:85%;
-}
-.cke_contents { height: 80% !important; }
-</style>
-
-
 <div ng-app="myApp">
-<div ng-controller="myC">
-<div class="row">
+<div ng-controller="myC" class="row">
 
     <div id="booksColumn" class="col-lg-2">
 
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Books</th>
-                    </tr>
-                   </thead>
+        <h3 class="header">Books</h3>
 
-                </table>
+        <select id="ddlbooks" ng-model="ddlbooks">
+            <option>psychology</option>
+            <option>economics</option>
+        </select>
 
-       
-                <select id="ddlbooks">
-                    <option>psychology</option>
-                    <option>economics</option>
-                </select>
+        <div id="booksWrapper">
+            <div id="booksList" class="list-group">
+                <a class="list-group-item" ng-class="{active: n.bookid==selectedBook}" ng-repeat="n in documents" ng-click="showChapters(n.bookid, n.name)" href="#/{{n.name}}">{{n.name}}</a>
+            </div>
 
-         <div id="booksWrapper">
-
-                <div id="booksList" class="list-group">
-                <a class="list-group-item" ng-repeat="n in documents" ng-click="showChapters(n.bookid, n.name)" href="#/{{n.name}}">{{n.name}}</a>
-                </div>
-
+            <div class="button-wrapper">
+                <input type="text" id="newBookName" ng-model="newBookName" class="addText"/>
+                <button type="button" ng-click="addBook()">Add a Book</button>
+                <button type="button" ng-click="removeSelectedBook()">Remove Selected Book</button>
+            </div>
         </div>
 
-
     </div>
 
 
     <div class="col-lg-5">
 
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Chapters</th>
-                    </tr>
-                   </thead>
-                    <tbody id="notes">
+        <h3 class="header">Chapters</h3>
 
-                    </tbody>
-                </table>
+        <ng-view></ng-view>
 
+        <div id="chaptersWrapper">
+            <div id="chaptersList" class="list-group">
+                <a class="list-group-item" ng-class="{active: n.chapid==selectedChapter}" ng-repeat="n in chapters" ng-click="showNotes(n.bookid, n.chapid)" href="#/{{selectedBook}}/{{n.chapid}}">{{n.name}}</a>
+            </div>
 
-<ng-view></ng-view>
-
-                <div class="list-group">
-                  <a class="list-group-item" ng-repeat="n in chapters" ng-click="showNotes(n.bookid, n.chapid)" href="#/{{selectedBook}}/{{n.chapid}}">{{n.name}}</a>
-
-                </div>
-
+            <div class="button-wrapper">
+                <input type="text" id="newBookChapter" ng-model="newChapterName" class="addText"/>
+                <button type="button" ng-click="addChapter()">Add a Chapter</button>
+                <button type="button" ng-click="removeSelectedChapter()">Remove Selected Chapter</button>
+            </div>
+        </div>
     </div>
 
     <div class="col-lg-5">
+
+        <h3 class="header">Notes</h3>
 
         <form ng-submit="sendPost()">
-
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Notes</th>
-                    </tr>
-                   </thead>
-                    <tbody id="notes">
-
-                    </tbody>
-                </table>
-
-
-
-
-       
             <textarea  id="texter" ng-model="toSend" ></textarea>
-                 <button type="submit">Send</button>
+
+            <div class="button-wrapper"><button type="submit">Send</button></div>
         </form>
 
-
     </div>
-
-
-
 </div>
 </div>
 
@@ -166,11 +79,6 @@ select{
             //console.log(CKEDITOR.instances['#texter'].getData());
     });
 
-
-
-
-
 </script>
 
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-

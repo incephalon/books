@@ -75,6 +75,10 @@ app.get('/chapters/:bookid', api.chapters);
 app.get('/notes/:bookid/:chapid', api.notes);
 app.get('/getBookId/:name', api.getBookId);
 app.post('/update', api.post);
+app.post('/addBook', api.addBook);
+app.post('/removeBook', api.removeBook); 
+app.post('/addChapter', api.addChapter); 
+app.post('/removeChapter', api.removeChapter); 
 
 // app.set('port', process.env.PORT || 3000);
 

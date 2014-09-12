@@ -46,7 +46,7 @@ var app = angular.module('myApp', ['ngRoute']);
 
 // 	  // 		$http.get('/chapters/'+namer)//bookid
 // 			//   .then(function(result) {
-// 			//     $scope.chapters = result.data;
+// 			//     $scope.chapters = result.data;k
 // 			//     console.log("chapters");
 // 			//  	console.log($scope.chapters);
 // 			// });  
@@ -80,54 +80,90 @@ app.controller('myC', function($scope, $http){
 	$scope.previousBook=1;
 	$scope.previousChapter=1;
 
-
-	$http.get('/book')
-	  .then(function(result) {
-	    $scope.documents = result.data;
-	    console.log("book data from my angular controller");
-	    console.log(result.data);
-	});
-
-
-
-	  $scope.showChapters = function(bookid, name){
-	  	//console.log(name);
-
-	  		$http.get('/chapters/'+ bookid)
-			  .then(function(result) {
-			    $scope.chapters = result.data;
-			});  
-
-			  $scope.selectedBook=bookid;
-
-			  $scope.previousBook=bookid;
-	  }
-
-	 $scope.showNotes = function(bookid, chapid){
-	  	//console.log(name);
-	  	//$("#texter").val("");SW
-
-	  		//var data = {"text": $("#texter").val(), "bookid": $scope.previousBook, "chapid": $scope.previousChapter};
-
-	  		$http.get('/notes/' + bookid + '/' + chapid)
-			  .then(function(result) {
-			    //$scope.notes = result.data[0].text;
-			    //console.log(result);
-			    //console.log(result.data);
+	$scope.showBooks = function() {
+		$http.get('/book')
+			.then(function(result) {
+			    $scope.documents = result.data;
+			    console.log("book data from my angular controller");
 			    console.log(result.data);
-				$("#texter").val(result.data[0].text);
+		});
+	}
+	$scope.showBooks(); 
 
-			 //    if(result.data[0].text!=null)
-			 //    {
-				//     //console.log(result.data[0].text);
-				//     //console.log(result.data[0]["text"]);
-				//     $("#texter").val(result.data[0].text);
-				// }
 
-			});  
-			$scope.selectedChapter=chapid;
-			$scope.previousChapter=chapid;
-	  }
+	$scope.addBook = function() {
+		if ($scope.newBookName == '') return; 
+		$http.post("/addBook", {bookname: $scope.newBookName}).success(function(data, status) {
+        	if(data.status == 1) {
+        		$scope.showBooks(); 
+        		$scope.newBookName = ''; 
+        	}
+        })
+	}
+
+	$scope.removeSelectedBook = function() {
+		if ($scope.selectedBook <= 0) return; 
+		$http.post("/removeBook", {bookid: $scope.selectedBook}).success(function(data, status) {
+        	if(data.status == 1) {
+        		$scope.showBooks(); 
+        	}
+        })
+	}
+
+	$scope.addChapter = function() {
+		if ($scope.selectedBook <= 0 || $scope.newChapterName == '') return; 
+		$http.post("/addChapter", {bookid: $scope.selectedBook, name: $scope.newChapterName}).success(function(data, status) {
+        	if(data.status == 1) {
+        		$scope.showChapters($scope.selectedBook, null); 
+        		$scope.newChapterName = ''; 
+        	}
+        })
+	}
+
+	$scope.removeSelectedChapter = function() {
+		if ($scope.selectedChapter <= 0) return; 
+		$http.post("/removeChapter", {chapid: $scope.selectedChapter}).success(function(data, status) {
+        	if(data.status == 1) {
+        		$scope.showChapters($scope.selectedBook, null); 
+        	}
+        })
+	}
+
+	$scope.showChapters = function(bookid, name){
+  		$http.get('/chapters/'+ bookid)
+		  .then(function(result) {
+		    $scope.chapters = result.data;
+		});  
+
+		$scope.selectedBook=bookid;
+		$scope.previousBook=bookid;
+	}
+
+	$scope.showNotes = function(bookid, chapid){
+	  	//console.log(name);
+	  	//$("#texter").val("");
+
+  		//var data = {"text": $("#texter").val(), "bookid": $scope.previousBook, "chapid": $scope.previousChapter};
+
+  		$http.get('/notes/' + bookid + '/' + chapid)
+		  .then(function(result) {
+		    //$scope.notes = result.data[0].text;
+		    //console.log(result);
+		    //console.log(result.data);
+		    console.log(result.data);
+			$("#texter").val(result.data[0].text);
+
+		 //    if(result.data[0].text!=null)
+		 //    {
+			//     //console.log(result.data[0].text);
+			//     //console.log(result.data[0]["text"]);
+			//     $("#texter").val(result.data[0].text);
+			// }
+
+		});  
+		$scope.selectedChapter=chapid;
+		$scope.previousChapter=chapid;
+	}
 
 	  // $scope.saveNote=function(){
 
@@ -140,13 +176,13 @@ app.controller('myC', function($scope, $http){
 
 	  // //$scope.toSend
 
-	    $scope.sendPost = function() {
-	        var data = {"text": $("#texter").val(), "bookid": $scope.selectedBook, "chapid": $scope.selectedChapter};
+    $scope.sendPost = function() {
+        var data = {"text": $("#texter").val(), "bookid": $scope.selectedBook, "chapid": $scope.selectedChapter};
 
-	        $http.post("/update", data).success(function(data, status) {
-	        	console.log("it worked");
-	            //$scope.hello = data;
-	        })
-	    }  
+        $http.post("/update", data).success(function(data, status) {
+        	console.log("it worked");
+            //$scope.hello = data;
+        })
+    }  
 
 });

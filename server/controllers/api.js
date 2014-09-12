@@ -32,7 +32,7 @@ var Notr = mongoose.model('Note', Note);
 mongoose.connect('mongodb://incephalon:lthnia90_@ds027729.mongolab.com:27729/books');
 
 exports.list = function(req, res) {
-  Book.find(function(err, books) {
+  Book.find().sort({name: 1}).exec(function(err, books) {
     res.send(books);
   });
 };
@@ -46,8 +46,7 @@ exports.getBookId = function(req, res) {
 
 
 exports.chapters = function(req, res) {
-  //Chaptr.find({ 'bookid': req.params.bookid }, function(err, chapters) {
-    Chaptr.find({ 'bookid': req.params.bookid }, function(err, chapters) {
+    Chaptr.find({ 'bookid': req.params.bookid }).sort({ 'chapid': 1 }).exec(function(err, chapters) {
     res.send(chapters);
   });
 };
@@ -59,12 +58,9 @@ exports.notes = function(req, res) {
   });
 };
 
-
 // exports.post = function(req, res) {
 //     new Notr({noteid:"12", chapid: "1", name:"will this work?"}).save();
 // }
-
-
 
 exports.post = function ( req, res ){
   //res.send('Username: ' + req.body.username);
@@ -91,8 +87,37 @@ exports.post = function ( req, res ){
 
 };
 
+exports.addBook = function( req, res ) {
+  Book.findOne().sort({'bookid':-1}).exec(function(err, data) {
+    var lastBookId = data.bookid; 
+    console.log(lastBookId); 
+    new Book({bookid:lastBookId+1, catid:1, name:req.body.bookname }).save(function(err) {
+      res.send({status: err ? 0 : 1});
+    });  
+  }); 
+}; 
 
+exports.removeBook = function( req, res ) {
+  Book.remove({bookid: req.body.bookid}, function(err, removed) {
+      res.send({status: removed ? 1 : 0});
+  }); 
+}
 
+exports.addChapter = function( req, res ) {
+  Chaptr.findOne().sort({'chapid':-1}).exec(function(err, data) {
+    var lastChapId = data.chapid; 
+    console.log(lastChapId); 
+    new Chaptr({chapid:lastChapId+1, bookid: req.body.bookid, name: req.body.name}).save(function(err) {
+        res.send({status: err ? 0 : 1}); 
+    }); 
+  }); 
+}
+
+exports.removeChapter = function( req, res ) {
+  Chaptr.remove({chapid: req.body.chapid}, function(err, removed) {
+      res.send({status: removed ? 1 : 0}); 
+  }); 
+}
 
 // exports.update = function(req, res) {
 
