@@ -24,15 +24,21 @@ var Note = new Schema({
     text: String
 }, { collection: 'Note' });
 
-mongoose.model('Category', Category);
+var Category = mongoose.model('Category', Category);
 var Book = mongoose.model('Books', Books);
 var Chaptr = mongoose.model('Chapter', Chapter);
 var Notr = mongoose.model('Note', Note);
 
 mongoose.connect('mongodb://incephalon:lthnia90_@ds027729.mongolab.com:27729/books');
 
-exports.list = function(req, res) {
-  Book.find().sort({name: 1}).exec(function(err, books) {
+exports.categories = function(req, res) {
+  Category.find().sort({catid: 1}).exec(function(err, categories) {
+    res.send(categories);
+  });
+};
+
+exports.books = function(req, res) {
+  Book.find({ 'catid': req.params.catid }, function(err, books) {
     res.send(books);
   });
 };
@@ -88,17 +94,21 @@ exports.post = function ( req, res ){
 };
 
 exports.addBook = function( req, res ) {
+  var catid = req.body.catid; 
+  var bookname = req.body.bookname; 
   Book.findOne().sort({'bookid':-1}).exec(function(err, data) {
     var lastBookId = data.bookid; 
-    new Book({bookid:lastBookId+1, catid:1, name:req.body.bookname }).save(function(err) {
-      res.send({status: err ? 0 : 1});
+    new Book({bookid:lastBookId+1, catid:catid, name:bookname }).save(function(err) {
+      res.send({status: err ? 0 : 1, newBookId:lastBookId+1});
     });  
   }); 
 }; 
 
 exports.removeBook = function( req, res ) {
-  Book.remove({bookid: req.body.bookid}, function(err, removed) {
-      res.send({status: removed ? 1 : 0});
+  Book.remove({bookid: req.body.bookid}, function(err, removedBook) {
+    Chaptr.remove({bookid: req.body.bookid}, function(err, removedChapter) {
+      res.send({status: removedBook ? 1 : 0});
+    })
   }); 
 }
 
@@ -106,7 +116,7 @@ exports.addChapter = function( req, res ) {
   Chaptr.findOne({bookid: req.body.bookid}).sort({'chapid':-1}).exec(function(err, data) {
     var lastChapId = data != null ? data.chapid : 0; 
     new Chaptr({chapid:lastChapId+1, bookid: req.body.bookid, name: req.body.name}).save(function(err) {
-        res.send({status: err ? 0 : 1}); 
+        res.send({status: err ? 0 : 1, newChapId: lastChapId+1}); 
     }); 
   }); 
 }

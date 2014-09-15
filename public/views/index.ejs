@@ -12,14 +12,12 @@
 
         <h3 class="header">Books</h3>
 
-        <select id="ddlbooks" ng-model="ddlbooks">
-            <option>psychology</option>
-            <option>economics</option>
+        <select id="ddlbooks" ng-model="selectedCat" ng-options="cat.catid as cat.name for cat in categories" ng-change="updateCategory()">
         </select>
 
         <div id="booksWrapper">
             <div id="booksList" class="list-group">
-                <a class="list-group-item" ng-class="{active: n.bookid==selectedBook}" ng-repeat="n in documents" ng-click="showChapters(n.bookid, n.name)" href="#/{{n.name}}">{{n.name}}</a>
+                <a class="list-group-item" ng-class="{active: n.bookid==selectedBook}" ng-repeat="n in books" ng-click="showChapters(n.bookid, n.name)" href="#/{{n.name}}">{{n.name}}</a>
             </div>
 
             <div class="button-wrapper">

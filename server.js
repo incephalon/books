@@ -70,7 +70,8 @@ app.get('/', function(req, res){
 });
 
 var api = require('./server/controllers/api.js');
-app.get('/book', api.list);
+app.get('/categories', api.categories)
+app.get('/books/:catid', api.books);
 app.get('/chapters/:bookid', api.chapters);
 app.get('/notes/:bookid/:chapid', api.notes);
 app.get('/getBookId/:name', api.getBookId);

@@ -71,32 +71,55 @@ var app = angular.module('myApp', ['ngRoute']);
 app.controller('myC', function($scope, $http){
 	$scope.hello="world";
 
-	$scope.documents = [];
+	$scope.categories = []; 
+	$scope.books = []; 
 	$scope.chapters = [];
 	$scope.notes = "";
-	$scope.selectedBook=1;
-	$scope.selectedChapter=1;
+	$scope.selectedBook=0;
+	$scope.selectedChapter=0;
+	$scope.selectedCat=0; 
 
-	$scope.previousBook=1;
-	$scope.previousChapter=1;
+	$scope.previousBook=0;
+	$scope.previousChapter=0;
+	$scope.previousCat=0; 
 
-	$scope.showBooks = function() {
-		$http.get('/book')
+	$scope.showCategories = function() {
+		$http.get('/categories')
 			.then(function(result) {
-			    $scope.documents = result.data;
+				$scope.categories = result.data; 
+				console.log("category data from my controller"); 
+				console.log(result.data); 
+				$scope.selectedCat = $scope.categories[0].catid; 
+
+				$scope.showBooks(); 
+			}); 
+	}
+	$scope.showCategories(); 
+
+	$scope.showBooks = function(catid) {
+		if (catid == null) catid = $scope.selectedCat; 
+		$http.get('/books/'+catid)
+			.then(function(result) {
 			    console.log("book data from my angular controller");
 			    console.log(result.data);
+   			    $scope.books = result.data;
+
+				$scope.selectedChapter = 0; 
+				if ($scope.selectedCat != catid) $scope.selectedCat = catid; 
 		});
 	}
-	$scope.showBooks(); 
 
+	$scope.updateCategory = function() {
+		$scope.showBooks($scope.selectedCat); 
+	}
 
 	$scope.addBook = function() {
 		if ($scope.newBookName == '') return; 
-		$http.post("/addBook", {bookname: $scope.newBookName}).success(function(data, status) {
+		$http.post("/addBook", {bookname: $scope.newBookName, catid: $scope.selectedCat}).success(function(data, status) {
         	if(data.status == 1) {
         		$scope.showBooks(); 
         		$scope.newBookName = ''; 
+				$scope.showChapters(data.newBookId, null); 
         	}
         })
 	}
@@ -106,6 +129,7 @@ app.controller('myC', function($scope, $http){
 		$http.post("/removeBook", {bookid: $scope.selectedBook}).success(function(data, status) {
         	if(data.status == 1) {
         		$scope.showBooks(); 
+				$scope.selectedBook = 0; 
         	}
         })
 	}
@@ -116,6 +140,7 @@ app.controller('myC', function($scope, $http){
         	if(data.status == 1) {
         		$scope.showChapters($scope.selectedBook, null); 
         		$scope.newChapterName = ''; 
+				$scope.selectedChapter = data.newChapId; 
         	}
         })
 	}
@@ -125,6 +150,7 @@ app.controller('myC', function($scope, $http){
 		$http.post("/removeChapter", {bookid: $scope.selectedBook, chapid: $scope.selectedChapter}).success(function(data, status) {
         	if(data.status == 1) {
         		$scope.showChapters($scope.selectedBook, null); 
+				$scope.selectedChapter = 0; 
         	}
         })
 	}
